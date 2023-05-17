@@ -1,38 +1,65 @@
-const API_URL = 'http://localhost:8080/api'
+import axios from 'axios'
 
-export const postPedido = async (req, res) => {
-  const { cliente, fecha, lugarEntrega, pedidosProducto, precioTotal } =
-    req.body
+import https from 'https'
 
-  const response = await fetch(`${API_URL}/pedido`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+
+const agent = new https.Agent({
+  rejectUnauthorized: false,
+})
+
+const API_URL = 'https://localhost:8443'
+
+export const postSensor = async (req, res) => {
+  const { identificador, modelo, zona } = req.body
+  const token = req.headers['auth']
+
+  const res = await axios.post(
+    `${API_URL}/sensores`,
+    {
+      identificador,
+      modelo,
+      zona,
     },
-    body: JSON.stringify({
-      cliente,
-      fecha,
-      lugarEntrega,
-      pedidosProducto,
-      precioTotal,
-    }),
-  })
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        auth: token,
+      },
+      httpsAgent: agent,
+    }
+  )
 
-  const data = await response.json()
+  if (response.status === 201) {
+    return res.status(201).json({ message: 'Sensor creado' })
+  }
 
-  return res.status(200).json(data)
+  return res.status(500).json({ message: 'Error al crear el sensor' })
 }
 
-export const deletePedido = async (req, res) => {
-  const { id } = req.params
-  console.log(id)
+export const postAlarma = async (req, res) => {
+  const { tipo, limiteInferior, limiteSuperior } = req.body
+  const token = req.headers['auth']
 
-  const response = await fetch(`${API_URL}/pedido/${id}`, {
-    method: 'DELETE',
-  })
+  const res = await axios.post(
+    `${API_URL}/alarmas`,
+    {
+      tipo,
+      limiteInferior,
+      limiteSuperior,
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        auth: token,
+      },
+      httpsAgent: agent,
+    }
+  )
 
-  if (response.status === 204) {
-    return res.status(204).json({ message: 'Pedido eliminado' })
+  if (response.status === 201) {
+    return res.status(201).json({ message: 'Alarma creada' })
   }
-  return res.status(404).json({ message: 'Pedido no encontrado' })
+
+  return res.status(500).json({ message: 'Error al crear la alarma' })
 }

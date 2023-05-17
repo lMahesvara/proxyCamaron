@@ -1,9 +1,9 @@
 import express from 'express'
-import { deletePedido, postPedido } from '../controllers/productos.js'
+import { postAlarma, postSensor } from '../controllers/productos'
 
 const router = express.Router()
 
-router.post('/pedido', postPedido)
-router.delete('/pedido/:id', deletePedido)
+router.post('/sensor', postSensor)
+router.post('/alarma', postAlarma)
 
 export default router
