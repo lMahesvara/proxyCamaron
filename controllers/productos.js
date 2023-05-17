@@ -14,7 +14,7 @@ export const postSensor = async (req, res) => {
   const { identificador, modelo, zona } = req.body
   const token = req.headers['auth']
 
-  const res = await axios.post(
+  const response = await axios.post(
     `${API_URL}/sensores`,
     {
       identificador,
@@ -41,7 +41,7 @@ export const postAlarma = async (req, res) => {
   const { tipo, limiteInferior, limiteSuperior } = req.body
   const token = req.headers['auth']
 
-  const res = await axios.post(
+  const response = await axios.post(
     `${API_URL}/alarmas`,
     {
       tipo,
